@@ -1,17 +1,69 @@
 import React, { useState } from 'react'
 import { ImCross } from "react-icons/im";
+import axiosInstance from '../api/axios';
 
-function AddTask({onClose,isUpdating}) {
+function AddTask({ onClose, isUpdating,setTasks }) {
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
     const [priority, setPriority] = useState('');
     const [status, setStatus] = useState('');
     const [description, setDescription] = useState('');
+    const [showError, setShowError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('');
+    
 
-    function handleSubmit(){
+    async function handleSubmit(e) {
+        e.preventDefault();
 
+        //  Validate 
+        if (!title.trim()) {
+            setShowError(true)
+            setErrorMessage("Title is required");
+            return;
+        }
+
+        if (!category.trim()) {
+            setShowError(true)
+            setErrorMessage("Category is required");
+            
+            return;
+        }
+
+        if (!description.trim()) {
+            setShowError(true)
+            setErrorMessage("Description is required");
+            return;
+        }
+
+        if (!status.trim()) {
+            setShowError(true)
+            setErrorMessage("Status is required");
+            return;
+        }
+
+        if (!priority.trim()) {
+            setShowError(true)
+            setErrorMessage("Priority is required");
+            
+            return;
+        }
+
+        try {
+            let response = await axiosInstance.post('/tasks', {
+                title,
+                category,
+                priority,
+                status,
+                description
+            });
+            setTasks((prev)=>[...prev,response.data.task])
+            console.log("Task created successfully", response.data);
+            onClose();//to close the modal
+
+        } catch (error) {
+            console.log( error.message);
+        }
     }
-
     return (
         <div className='h-full w-full fixed bg-[#101622]/80 flex justify-center z-100 inset-y-0.5 '>
             <div className="bg-white  shadow-2xl rounded-2xl w-full max-w-md p-8 overflow-y-auto">
@@ -100,15 +152,20 @@ function AddTask({onClose,isUpdating}) {
 
                     </div>
 
+                    {/* errordiv */}
+
+                    {showError && <p>className="text-red-500 text-xs mt-1 flex items-center gap-1"
+                        {errorMessage}</p>}
+
 
                     {/* Button */}
                     <button
                         type="submit"
                         className="w-full bg-indigo-500 text-white py-2 rounded-xl font-semibold hover:bg-indigo-600 transition duration-200 cursor-pointer"
-                        
+
                     >
                         {
-                            isUpdating ? <span>Save changes</span> : <span>Add Customer</span>
+                            isUpdating ? <span>Save changes</span> : <span>Add Task</span>
                         }
 
                     </button>

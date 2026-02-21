@@ -5,7 +5,6 @@ import MyTask from './pages/MyTask'
 import Login from './pages/Login'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import RegisterPage from './pages/RegisterPage'
-import TaskItem from './components/TaskItem'
 import { useDispatch } from 'react-redux'
 import axiosInstance from './api/axios'
 import { setIsLoggedin, setAuthUser } from './features/userSlice.js'
@@ -61,10 +60,7 @@ function App() {
         path: '/register',
         element: <RegisterPage />
       },
-      {
-        path: '/tasks/:id',
-        element: <TaskItem />
-      },
+
     ]
 
   )
