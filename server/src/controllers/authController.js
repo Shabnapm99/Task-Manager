@@ -64,3 +64,8 @@ export const register = async (req, res) => {
     }
 
 }
+
+
+export const profile = async (req, res) => {
+    res.status(200).json({ user: req.user })
+}

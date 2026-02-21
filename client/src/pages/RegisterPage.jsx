@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../api/axios';
 
 function RegisterPage() {
     const [email, setEmail] = useState('');
@@ -18,47 +19,42 @@ function RegisterPage() {
             setErrorMessage('Please provide a valid name');
             return;
         } else
-            if (!role.trim() || role.toUpperCase() !== "ADMIN" && role.toUpperCase() !== "AGENT") {
+
+            if (!email.trim()) {
                 setShowError(true);
-                setErrorMessage('Please provide admin or agent');
+                setErrorMessage('Please provide a valid email');
                 return;
             } else
-                if (!email.trim()) {
+                if (emailRegex.test(email) === false) {
                     setShowError(true);
-                    setErrorMessage('Please provide a valid email');
-                    return;
-                } else
-                    if (emailRegex.test(email) === false) {
-                        setShowError(true);
-                        setErrorMessage("Please provide proper email");
-                        return
-                    }
-                    else {
-                        try {
-                            let response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, { name, email, password, role: role.toUpperCase(), username });
+                    setErrorMessage("Please provide proper email");
+                    return
+                }
+                else {
+                    try {
+                        let response = await axiosInstance.post('/auth/register', { name, email, password, username });
 
-                            if (response.status === 201) {
-                                console.log("user created successfully")
-                                setShowError(false);
-                                setName('');
-                                setEmail('');
-                                setRole('');
-                                setUsername('');
-                                setPassword('');//clear the fields on success only
-                                navigate('/login')
-                            } else {
-                                setShowError(true);
-                                setErrorMessage(response.data.message);
-                            }
-
-
-                        } catch (error) {
-
-                            console.log("Error happened while posting the data", error.message);
+                        if (response.status === 201) {
+                            console.log("user created successfully")
+                            setShowError(false);
+                            setName('');
+                            setEmail('');
+                            setUsername('');
+                            setPassword('');//clear the fields on success only
+                            navigate('/login')
+                        } else {
                             setShowError(true);
-                            setErrorMessage(error.message)
+                            setErrorMessage(response.data.message);
                         }
+
+
+                    } catch (error) {
+
+                        console.log("Error happened while posting the data", error.message);
+                        setShowError(true);
+                        setErrorMessage(error.message)
                     }
+                }
     }
     return (
         <div className="flex flex-col lg:flex-row lg:gap-5 items-center justify-center min-h-screen bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 px-4">

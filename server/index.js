@@ -21,8 +21,14 @@ app.get('/',(req,res)=>{
 
 dbConnect();
 
-app.listen(PORT,()=>console.log("Server is running on port : ",PORT));
-// export default app;//while deploying in versel we need to export this
+// app.listen(PORT,()=>console.log("Server is running on port : ",PORT));
+if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+export default app;//while deploying in versel we need to export this
 
 
 
