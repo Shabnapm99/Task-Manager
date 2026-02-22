@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import {Link} from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function Home() {
-    const [showAddModal, setShowModal] = useState(false);
+    let isLoggedin = useSelector((state) => state.user.isLoggedin);
     return (
         <div className="max-h-screen bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500">
 
@@ -10,14 +11,14 @@ function Home() {
                 <div className="bg-white rounded-2xl shadow-xl max-w-xl w-full p-10 text-center">
 
                     <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                       Organize Your Work. Simplify Your Life.
+                        Organize Your Work. Simplify Your Life.
                     </h2>
 
                     <p className="text-gray-600 mb-8">
                         Stay focused, manage your daily tasks efficiently, and boost your productivity with our powerful and easy-to-use Task Management App.
                     </p>
 
-                    <div className="flex justify-center gap-4">
+                    {!isLoggedin && <div className="flex justify-center gap-4">
                         <Link
                             to="/login"
                             className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
@@ -31,7 +32,7 @@ function Home() {
                         >
                             Sign Up
                         </Link>
-                    </div>
+                    </div>}
 
                 </div>
             </div>

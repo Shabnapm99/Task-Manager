@@ -5,9 +5,9 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import AddTask from './AddTask';
 
-function Task({ task, setTasks, setIsUpdating, setCurrentTask ,setShowModal}) {
+function Task({ task, setTasks, setIsUpdating, setCurrentTask, setShowModal }) {
     let navigate = useNavigate();
-    
+
     // edit task
 
     async function editTask(id) {
@@ -31,23 +31,34 @@ function Task({ task, setTasks, setIsUpdating, setCurrentTask ,setShowModal}) {
     }
     return (
 
-        <div className="bg-white rounded-2xl shadow-xl w-full p-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">{task.title}</h2>
-            <FaEdit className='text-slate-400 cursor-pointer'
-                onClick={() => { editTask(task) }} />
-
-            <MdDelete className='text-red-400 cursor-pointer'
-                onClick={() => deleteTask(task._id)} />
-            <div className='flex gap-5 font-medium text-indigo-700'>
-                <div className='border-2 px-1 rounded-2xl'>{task.priority}</div>
-                <div className='border-2 px-1 rounded-2xl'>{task.status}</div>
+               <div className="bg-white rounded-2xl shadow-md p-5 flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 transition-transform hover:scale-105 hover:shadow-xl
+            w-full max-w-md mx-auto">
+            
+            {/* Task Info */}
+            <div className="flex-1 w-full">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{task.title}</h2>
+                <p className="text-gray-600 mb-2 line-clamp-3">{task.description}</p>
+                <div className='flex flex-wrap gap-2 mt-2'>
+                    <span className='bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium'>{task.priority}</span>
+                    <span className='bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium'>{task.status}</span>
+                    <span className='bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium'>{task.category}</span>
+                </div>
             </div>
-            <div className='pt-2'>category:{task.category} </div>
-            <p className="text-gray-600 m-3">
-                {task.description}</p>
 
+            {/* Actions */}
+            <div className="flex gap-4 mt-2 md:mt-0">
+                <FaEdit
+                    className='text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors'
+                    onClick={editTask}
+                    title="Edit Task"
+                />
+                <MdDelete
+                    className='text-red-600 cursor-pointer hover:text-red-800 transition-colors'
+                    onClick={() => deleteTask(task._id)}
+                    title="Delete Task"
+                />
+            </div>
         </div>
-
 
     )
 }

@@ -23,21 +23,22 @@ function MyTask() {
         }
         getTasks()
 
-    }, [tasks])
+    }, [])
 
     return (
-        <div className="min-h-screen bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 p-20 flex flex-col items-center gap-2">
+        <div className="min-h-screen bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 md:p-10 flex flex-col items-center gap-2">
             <div className='w-full'>
                 <button type="button" className=" text-indigo-500 bg-white py-2 px-5 rounded-xl font-semibold hover:bg-indigo-600 hover:text-white transition duration-200"
                     onClick={() => setShowModal(true)}>Add Task</button>
 
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 place-items-center w-full'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-6xl '>
                 {
                     tasks.map((task) => {
                         return (
-                            <Task key={task._id} task={task} setTasks={setTasks} setIsUpdating={setIsUpdating} isUpdating={isUpdating} setCurrentTask={setCurrentTask} setShowModal={setShowModal} />
-                        )
+                            <div className="w-[90%] md:w-full mx-auto" key={task._id}>
+                                <Task key={task._id} task={task} setTasks={setTasks} setIsUpdating={setIsUpdating} isUpdating={isUpdating} setCurrentTask={setCurrentTask} setShowModal={setShowModal} />
+                            </div>)
                     })
                 }
 
@@ -51,7 +52,6 @@ function MyTask() {
             } isUpdating={isUpdating} setTasks={setTasks}
                 taskData={currentTask} // pass the task being edited
             />}
-
 
         </div>
 
