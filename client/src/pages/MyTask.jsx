@@ -7,6 +7,7 @@ function MyTask() {
     const [showAddModal, setShowModal] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [currentTask, setCurrentTask] = useState(null); //
 
     //to get all tasks of user when logged in
     useEffect(() => {
@@ -35,13 +36,21 @@ function MyTask() {
                 {
                     tasks.map((task) => {
                         return (
-                            <Task key={task._id} task={task} />
+                            <Task key={task._id} task={task} setTasks={setTasks} setIsUpdating={setIsUpdating} isUpdating={isUpdating} setCurrentTask={setCurrentTask} setShowModal={setShowModal} />
                         )
                     })
                 }
 
             </div>
-            {showAddModal && <AddTask onClose={() => setShowModal(false)} isUpdating={isUpdating} setTasks={setTasks} />}
+            {showAddModal && <AddTask onClose={() => {
+                setShowModal(false);
+                setIsUpdating(false);
+                setCurrentTask(null);
+            }
+
+            } isUpdating={isUpdating} setTasks={setTasks}
+                taskData={currentTask} // pass the task being edited
+            />}
 
 
         </div>

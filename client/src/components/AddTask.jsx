@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ImCross } from "react-icons/im";
 import axiosInstance from '../api/axios';
 
-function AddTask({ onClose, isUpdating,setTasks }) {
+function AddTask({ onClose, isUpdating, setTasks, taskData }) {
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
     const [priority, setPriority] = useState('');
@@ -10,59 +10,91 @@ function AddTask({ onClose, isUpdating,setTasks }) {
     const [description, setDescription] = useState('');
     const [showError, setShowError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('');
-    
+
+    useEffect(() => {
+        if (isUpdating && taskData) {
+            setTitle(taskData.title);
+            setCategory(taskData.category);
+            setPriority(taskData.priority);
+            setStatus(taskData.status);
+            setDescription(taskData.description);
+        }
+    }, [isUpdating, taskData]);//prefill the data if it is updating mode
 
     async function handleSubmit(e) {
         e.preventDefault();
+        //update task
+        if (isUpdating && taskData) {
+            try {
+                let response = await axiosInstance.put(`/tasks/${taskData._id}`, {
+                    title, category, priority, status, description
+                });
+                setTasks(prev => prev.map(task => task._id === taskData._id ? response.data.task : task));
+                setShowError(false); // reset error
+                onClose();//to close the modal
 
-        //  Validate 
-        if (!title.trim()) {
-            setShowError(true)
-            setErrorMessage("Title is required");
-            return;
+            } catch (error) {
+                console.log(error.message);
+                setShowError(true)
+                setErrorMessage("Failed to update task");
+            }
+            return
+
+        } else {
+            //  Validate while adding data
+            if (!title.trim()) {
+                setShowError(true)
+                setErrorMessage("Title is required");
+                return;
+            }
+
+            if (!category.trim()) {
+                setShowError(true)
+                setErrorMessage("Category is required");
+
+                return;
+            }
+
+            if (!description.trim()) {
+                setShowError(true)
+                setErrorMessage("Description is required");
+                return;
+            }
+
+            if (!status.trim()) {
+                setShowError(true)
+                setErrorMessage("Status is required");
+                return;
+            }
+
+            if (!priority.trim()) {
+                setShowError(true)
+                setErrorMessage("Priority is required");
+
+                return;
+            }
+
+            try {
+                let response = await axiosInstance.post('/tasks', {
+                    title,
+                    category,
+                    priority,
+                    status,
+                    description
+                });
+                setTasks((prev) => [...prev, response.data.task])
+                console.log("Task created successfully", response.data);
+                setShowError(false);
+                onClose();//to close the modal
+
+            } catch (error) {
+                console.log(error.message);
+                setShowError(true)
+                setErrorMessage("Failed to update task");
+            }
         }
 
-        if (!category.trim()) {
-            setShowError(true)
-            setErrorMessage("Category is required");
-            
-            return;
-        }
 
-        if (!description.trim()) {
-            setShowError(true)
-            setErrorMessage("Description is required");
-            return;
-        }
-
-        if (!status.trim()) {
-            setShowError(true)
-            setErrorMessage("Status is required");
-            return;
-        }
-
-        if (!priority.trim()) {
-            setShowError(true)
-            setErrorMessage("Priority is required");
-            
-            return;
-        }
-
-        try {
-            let response = await axiosInstance.post('/tasks', {
-                title,
-                category,
-                priority,
-                status,
-                description
-            });
-            setTasks((prev)=>[...prev,response.data.task])
-            console.log("Task created successfully", response.data);
-            onClose();//to close the modal
-
-        } catch (error) {
-            console.log( error.message);
-        }
     }
     return (
         <div className='h-full w-full fixed bg-[#101622]/80 flex justify-center z-100 inset-y-0.5 '>
