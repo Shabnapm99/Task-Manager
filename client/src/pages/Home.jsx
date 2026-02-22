@@ -33,7 +33,6 @@ function Home() {
                             Sign Up
                         </Link>
                     </div>}
-
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ import { setAuthUser, setIsLoggedin } from '../features/userSlice.js'
 function Navbar() {
     let isLoggedin = useSelector((state) => state.user.isLoggedin);
     let user = useSelector((state) => state.user.authUser)
+    console.log(isLoggedin, user)
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
@@ -33,11 +34,11 @@ function Navbar() {
                         <div className='flex justify-center items-center gap-2'>
                             <Link to="/tasks" className="hover:text-indigo-600">Tasks</Link>
                             <div
-                                className="text-[#135bec] hover:text-white cursor-pointer hidden md:block"
+                                className="text-indigo-600 cursor-pointer hidden md:block"
                             >
                                 Hi, {user?.name}
                             </div>
-                            <div className='hover:text-[#135bec] cursor-pointer' onClick={() => {
+                            <div className='bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition  cursor-pointer' onClick={() => {
 
                                 localStorage.removeItem("securedToken");
                                 dispatch(setIsLoggedin(false));
