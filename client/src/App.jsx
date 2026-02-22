@@ -50,7 +50,6 @@ function App() {
       let initAuth = async () => {
         try {
           let response = await axiosInstance.get('/auth/profile');//we should pass the token while api calling. then only autherization happen
-          console.log("FULL API RESPONSE:", response.data); // <--- LOOK AT THIS IN C
           dispatch(setIsLoggedin(true));
           dispatch(setAuthUser(response.data.user))
 

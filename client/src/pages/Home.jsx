@@ -27,7 +27,7 @@ function Home() {
                         </Link>
 
                         <Link
-                            to="/sign-up"
+                            to="/register"
                             className="border border-indigo-600 text-indigo-600 px-6 py-3 rounded-lg hover:bg-indigo-50 transition"
                         >
                             Sign Up
