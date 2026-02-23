@@ -29,22 +29,18 @@ backend - https://task-manager-e37o.vercel.app/
 
 ## Frontend
 
-- React.js
-
-- Vite
-
+- React(vite)
+- Tailwind css
 - Axios
-
 - React Router DOM
+- React Icons
 
-- CSS / Bootstrap
 
 ## Backend
 
 - Node.js
 - Express.js
-- MongoDB
-- Mongoose
+- MongoDB(Mongoose)
 - JWT (Authentication)
 - bcrypt
 - CORS
