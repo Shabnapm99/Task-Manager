@@ -1,3 +1,215 @@
+// import React, { useEffect, useState } from 'react'
+// import { ImCross } from "react-icons/im";
+// import axiosInstance from '../api/axios';
+
+// function AddTask({ onClose, isUpdating, setTasks, taskData }) {
+//     const [title, setTitle] = useState('');
+//     const [category, setCategory] = useState('');
+//     const [priority, setPriority] = useState('');
+//     const [status, setStatus] = useState('');
+//     const [description, setDescription] = useState('');
+//     const [showError, setShowError] = useState(false)
+//     const [errorMessage, setErrorMessage] = useState('');
+
+//     useEffect(() => {
+//         if (isUpdating && taskData) {
+//             setTitle(taskData.title);
+//             setCategory(taskData.category);
+//             setPriority(taskData.priority);
+//             setStatus(taskData.status);
+//             setDescription(taskData.description);
+//         }
+//     }, [isUpdating, taskData]);//prefill the data if it is updating mode
+
+//     async function handleSubmit(e) {
+//         e.preventDefault();
+//         //update task
+//         if (isUpdating && taskData) {
+//             try {
+//                 let response = await axiosInstance.put(`/tasks/${taskData._id}`, {
+//                     title, category, priority, status, description
+//                 });
+//                 setTasks(prev => prev.map(task => task._id === taskData._id ? response.data.task : task));
+//                 setShowError(false); // reset error
+//                 onClose();//to close the modal
+
+//             } catch (error) {
+//                 console.log(error.message);
+//                 setShowError(true)
+//                 setErrorMessage("Failed to update task");
+//             }
+//             return
+
+//         } else {
+//             //  Validate while adding data
+//             if (!title.trim()) {
+//                 setShowError(true)
+//                 setErrorMessage("Title is required");
+//                 return;
+//             }
+
+//             if (!category.trim()) {
+//                 setShowError(true)
+//                 setErrorMessage("Category is required");
+
+//                 return;
+//             }
+
+//             if (!description.trim()) {
+//                 setShowError(true)
+//                 setErrorMessage("Description is required");
+//                 return;
+//             }
+
+//             if (!status.trim()) {
+//                 setShowError(true)
+//                 setErrorMessage("Status is required");
+//                 return;
+//             }
+
+//             if (!priority.trim()) {
+//                 setShowError(true)
+//                 setErrorMessage("Priority is required");
+
+//                 return;
+//             }
+
+//             try {
+//                 let response = await axiosInstance.post('/tasks', {
+//                     title,
+//                     category,
+//                     priority,
+//                     status,
+//                     description
+//                 });
+//                 setTasks((prev) => [...prev, response.data.task])
+//                 console.log("Task created successfully", response.data);
+//                 setShowError(false);
+//                 onClose();//to close the modal
+
+//             } catch (error) {
+//                 console.log(error.message);
+//                 setShowError(true)
+//                 setErrorMessage("Failed to update task");
+//             }
+//         }
+
+
+//     }
+//     return (
+//         <div className='h-full w-full fixed bg-[#101622]/80 flex justify-center z-100 inset-y-0.5 '>
+//             <div className="bg-white  shadow-2xl rounded-2xl w-full max-w-md p-8 overflow-y-auto">
+//                 <div className='bg-indigo-500 text-white  p-2 mb-2 w-fit rounded hover:text-indigo-950'>
+//                     <ImCross onClick={onClose} />
+
+//                 </div>
+//                 <div className="text-center mb-8">
+//                     {/* <h2 class="text-2xl font-bold tracking-tight text-white">CRM Suite</h2> */}
+//                     <h1 className="text-3xl font-bold text-gray-800">
+//                         {isUpdating ? <span>Update Customer</span> : <span>Add a customer</span>}</h1>
+//                     <p className="text-gray-500 mt-2 text-sm">
+//                         Start managing your customers more efficiently today
+//                     </p>
+//                 </div>
+//                 <form className="space-y-5" onSubmit={handleSubmit}>
+//                     {/*Title*/}
+//                     <div>
+//                         <label className="block text-sm font-medium text-gray-500 mb-1">
+//                             Title
+//                         </label>
+//                         <input
+//                             type="text"
+//                             placeholder="Title of task"
+//                             value={title}
+//                             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transitiontext-sm"
+//                             onChange={(e) => setTitle(e.target.value)}
+//                         />
+//                     </div>
+
+//                     {/* category */}
+
+//                     <div>
+//                         <label className="block text-sm font-medium text-gray-500 mb-1">
+//                             category
+//                         </label>
+//                         <input
+//                             type="text"
+//                             placeholder="General"
+//                             value={category}
+//                             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
+//                             onChange={(e) => setCategory(e.target.value)}
+//                         />
+//                     </div>
+
+//                     {/* priority */}
+//                     <div>
+//                         <label className="block text-sm font-medium text-gray-500 mb-1">
+//                             priority
+//                         </label>
+//                         <input
+//                             type="text"
+//                             placeholder="Low, Medium, High"
+//                             value={priority}
+//                             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
+//                             onChange={(e) => setPriority(e.target.value)}
+//                         />
+//                     </div>
+
+//                     {/* status */}
+//                     <div>
+//                         <label className="block text-sm font-medium text-gray-500 mb-1">
+//                             Status
+//                         </label>
+//                         <input
+//                             type="text"
+//                             placeholder="To Do, In Progress, Completed"
+//                             value={status}
+//                             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
+//                             onChange={(e) => setStatus(e.target.value)}
+//                         />
+
+//                     </div>
+//                     {/* description */}
+//                     <div>
+//                         <label className="block text-sm font-medium text-gray-500 mb-1">
+//                             Description
+//                         </label>
+//                         <textarea
+//                             placeholder="Description"
+//                             value={description}
+//                             minLength={10}
+//                             maxLength={500}
+//                             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
+//                             onChange={(e) => setDescription(e.target.value)}></textarea>
+
+//                     </div>
+
+//                     {/* errordiv */}
+
+//                     {showError && <p>className="text-red-500 text-xs mt-1 flex items-center gap-1"
+//                         {errorMessage}</p>}
+
+
+//                     {/* Button */}
+//                     <button
+//                         type="submit"
+//                         className="w-full bg-indigo-500 text-white py-2 rounded-xl font-semibold hover:bg-indigo-600 transition duration-200 cursor-pointer"
+
+//                     >
+//                         {
+//                             isUpdating ? <span>Save changes</span> : <span>Add Task</span>
+//                         }
+
+//                     </button>
+//                 </form>
+//             </div >
+//         </div >
+//     )
+// }
+
+// export default AddTask
+
+
 import React, { useEffect, useState } from 'react'
 import { ImCross } from "react-icons/im";
 import axiosInstance from '../api/axios';
@@ -19,192 +231,138 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
             setStatus(taskData.status);
             setDescription(taskData.description);
         }
-    }, [isUpdating, taskData]);//prefill the data if it is updating mode
+    }, [isUpdating, taskData]);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        //update task
-        if (isUpdating && taskData) {
-            try {
-                let response = await axiosInstance.put(`/tasks/${taskData._id}`, {
-                    title, category, priority, status, description
-                });
-                setTasks(prev => prev.map(task => task._id === taskData._id ? response.data.task : task));
-                setShowError(false); // reset error
-                onClose();//to close the modal
+        const payload = { title, category, priority, status, description };
 
-            } catch (error) {
-                console.log(error.message);
-                setShowError(true)
-                setErrorMessage("Failed to update task");
+        try {
+            if (isUpdating && taskData) {
+                let response = await axiosInstance.put(`/tasks/${taskData._id}`, payload);
+                setTasks(prev => prev.map(t => t._id === taskData._id ? response.data.task : t));
+            } else {
+                // Validation logic
+                if (!title.trim() || !category.trim() || !description.trim()) {
+                    setErrorMessage("All fields are required");
+                    setShowError(true);
+                    return;
+                }
+                let response = await axiosInstance.post('/tasks', payload);
+                setTasks((prev) => [...prev, response.data.task]);
             }
-            return
-
-        } else {
-            //  Validate while adding data
-            if (!title.trim()) {
-                setShowError(true)
-                setErrorMessage("Title is required");
-                return;
-            }
-
-            if (!category.trim()) {
-                setShowError(true)
-                setErrorMessage("Category is required");
-
-                return;
-            }
-
-            if (!description.trim()) {
-                setShowError(true)
-                setErrorMessage("Description is required");
-                return;
-            }
-
-            if (!status.trim()) {
-                setShowError(true)
-                setErrorMessage("Status is required");
-                return;
-            }
-
-            if (!priority.trim()) {
-                setShowError(true)
-                setErrorMessage("Priority is required");
-
-                return;
-            }
-
-            try {
-                let response = await axiosInstance.post('/tasks', {
-                    title,
-                    category,
-                    priority,
-                    status,
-                    description
-                });
-                setTasks((prev) => [...prev, response.data.task])
-                console.log("Task created successfully", response.data);
-                setShowError(false);
-                onClose();//to close the modal
-
-            } catch (error) {
-                console.log(error.message);
-                setShowError(true)
-                setErrorMessage("Failed to update task");
-            }
+            onClose();
+        } catch (error) {
+            setShowError(true);
+            setErrorMessage(error.message);
         }
-
-
     }
-    return (
-        <div className='h-full w-full fixed bg-[#101622]/80 flex justify-center z-100 inset-y-0.5 '>
-            <div className="bg-white  shadow-2xl rounded-2xl w-full max-w-md p-8 overflow-y-auto">
-                <div className='bg-indigo-500 text-white  p-2 mb-2 w-fit rounded hover:text-indigo-950'>
-                    <ImCross onClick={onClose} />
 
-                </div>
-                <div className="text-center mb-8">
-                    {/* <h2 class="text-2xl font-bold tracking-tight text-white">CRM Suite</h2> */}
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        {isUpdating ? <span>Update Customer</span> : <span>Add a customer</span>}</h1>
-                    <p className="text-gray-500 mt-2 text-sm">
-                        Start managing your customers more efficiently today
+    return (
+        /* Frosted Glass Overlay */
+        <div className='fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-100 p-4'>
+            
+            {/* Modal Container */}
+            <div className="bg-white/90 backdrop-blur-2xl border border-white shadow-2xl rounded-[2.5rem] w-full max-w-lg p-8 md:p-10 relative overflow-hidden">
+                
+                {/* Close Button */}
+                <button 
+                    onClick={onClose}
+                    className='absolute top-6 right-6 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all'
+                >
+                    <ImCross size={14} />
+                </button>
+
+                <div className="mb-8">
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+                        {isUpdating ? "Update Task" : "Create Task"}
+                    </h1>
+                    <p className="text-slate-500 mt-1 font-medium italic">
+                        Organize your workflow in seconds.
                     </p>
                 </div>
+
                 <form className="space-y-5" onSubmit={handleSubmit}>
-                    {/*Title*/}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-500 mb-1">
-                            Title
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Title of task"
-                            value={title}
-                            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transitiontext-sm"
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Title</label>
+                            <input
+                                type="text"
+                                placeholder="What needs to be done?"
+                                value={title}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 outline-none transition-all"
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Priority</label>
+                            <select 
+                                value={priority} 
+                                onChange={(e) => setPriority(e.target.value)}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50"
+                            >
+                                <option value="">Select</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Status</label>
+                            <select 
+                                value={status} 
+                                onChange={(e) => setStatus(e.target.value)}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50"
+                            >
+                                <option value="">Select</option>
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
                     </div>
 
-                    {/* category */}
-
                     <div>
-                        <label className="block text-sm font-medium text-gray-500 mb-1">
-                            category
-                        </label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Category</label>
                         <input
                             type="text"
-                            placeholder="General"
+                            placeholder="e.g. Work, Personal, Fitness"
                             value={category}
-                            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
+                            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50"
                             onChange={(e) => setCategory(e.target.value)}
                         />
                     </div>
 
-                    {/* priority */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-500 mb-1">
-                            priority
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Low, Medium, High"
-                            value={priority}
-                            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
-                            onChange={(e) => setPriority(e.target.value)}
-                        />
-                    </div>
-
-                    {/* status */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-500 mb-1">
-                            Status
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="To Do, In Progress, Completed"
-                            value={status}
-                            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
-                            onChange={(e) => setStatus(e.target.value)}
-                        />
-
-                    </div>
-                    {/* description */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-500 mb-1">
-                            Description
-                        </label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Description</label>
                         <textarea
-                            placeholder="Description"
+                            placeholder="Add some details..."
                             value={description}
-                            minLength={10}
-                            maxLength={500}
-                            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition text-sm"
-                            onChange={(e) => setDescription(e.target.value)}></textarea>
-
+                            rows="3"
+                            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50 resize-none"
+                            onChange={(e) => setDescription(e.target.value)}
+                        ></textarea>
                     </div>
 
-                    {/* errordiv */}
+                    {showError && (
+                        <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-bold flex items-center gap-2">
+                             <span>⚠️</span> {errorMessage}
+                        </div>
+                    )}
 
-                    {showError && <p>className="text-red-500 text-xs mt-1 flex items-center gap-1"
-                        {errorMessage}</p>}
-
-
-                    {/* Button */}
                     <button
                         type="submit"
-                        className="w-full bg-indigo-500 text-white py-2 rounded-xl font-semibold hover:bg-indigo-600 transition duration-200 cursor-pointer"
-
+                        className="w-full group relative bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg overflow-hidden transition-all active:scale-95 shadow-xl shadow-slate-900/10"
                     >
-                        {
-                            isUpdating ? <span>Save changes</span> : <span>Add Task</span>
-                        }
-
+                        <span className="relative z-10">{isUpdating ? "Save Changes" : "Add Task"}</span>
+                        <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </button>
                 </form>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }
 
-export default AddTask
+export default AddTask;

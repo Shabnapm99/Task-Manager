@@ -11,8 +11,9 @@ This project demonstrates best practices in full-stack JavaScript development, a
 
 # Live Hosted Links
 
-frontend - https://task-manager-one-mu-56.vercel.app/
-backend - https://task-manager-e37o.vercel.app/
+## frontend 
+- https://task-manager-one-mu-56.vercel.app/
+- backend - https://task-manager-e37o.vercel.app/
 
 # 🚀 Features
 

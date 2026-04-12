@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage'
 import { useDispatch } from 'react-redux'
 import axiosInstance from './api/axios'
 import { setIsLoggedin, setAuthUser } from './features/userSlice.js'
+import ProtectedRoute from './routes/ProtectedRoute.jsx'
 
 const router = createBrowserRouter(
   [
@@ -20,8 +21,14 @@ const router = createBrowserRouter(
           element: <Home />
         },
         {
-          path: '/tasks',
-          element: <MyTask />
+          path: '/',
+          element: <ProtectedRoute />,
+          children:[
+            {
+              path:'/tasks',
+              element:<MyTask/>
+            }
+          ]
         }
 
       ]
