@@ -102,9 +102,24 @@ function Home() {
             <div className="max-w-7xl mx-auto px-6 -mt-16 relative z-20 pb-20">
                 <div className="grid md:grid-cols-3 gap-8">
                     {[
-                        { title: "Smart Scheduling", desc: "Automate your priorities with AI-driven insights.", icon: "📅" },
-                        { title: "Team Sync", desc: "Collaborate in real-time with your squad effortlessly.", icon: "🚀" },
-                        { title: "Cloud Security", desc: "Your data is encrypted and stored in ultra-secure vaults.", icon: "🔒" }
+                        // { title: "Smart Scheduling", desc: "Automate your priorities with AI-driven insights.", icon: "📅" },
+                        // { title: "Team Sync", desc: "Collaborate in real-time with your squad effortlessly.", icon: "🚀" },
+                        // { title: "Cloud Security", desc: "Your data is encrypted and stored in ultra-secure vaults.", icon: "🔒" }
+                        {
+                            title: "User Authentication",
+                            desc: "Secure login ensures only registered users can create and manage their tasks.",
+                            icon: "🔐"
+                        },
+                        {
+                            title: "Private Task Management",
+                            desc: "Each user can view and manage only their own tasks, ensuring complete privacy.",
+                            icon: "📝"
+                        },
+                        {
+                            title: "Task Creation & Tracking",
+                            desc: "Easily add, update, and track your daily tasks in one organized place.",
+                            icon: "✅"
+                        }
                     ].map((feature, idx) => (
                         <div key={idx} className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 transform hover:scale-105 transition-transform">
                             <div className="text-4xl mb-4">{feature.icon}</div>
