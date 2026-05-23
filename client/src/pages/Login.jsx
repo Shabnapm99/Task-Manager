@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import { useDispatch } from 'react-redux';
-import {setIsLoggedin,setAuthUser} from '../features/userSlice.js'
+import { setIsLoggedin, setAuthUser } from '../features/userSlice.js'
 
 function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   let dispatch = useDispatch();
   let navigate = useNavigate();
@@ -16,6 +17,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       let response = await axiosInstance.post('/auth/login', { email, password });
       if (response.status === 200) {
         localStorage.setItem("securedToken", response.data.token);
@@ -26,13 +28,15 @@ function Login() {
     } catch (error) {
       console.log(error.message);
       setShowError(true);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     /* Background matching Home.jsx with Blue-Green Mesh Gradients */
     <div className="relative flex items-center justify-center min-h-screen bg-slate-50 px-4 overflow-hidden">
-      
+
       {/* Decorative Mesh Background Blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/50 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-100/60 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse delay-700"></div>
@@ -40,7 +44,7 @@ function Login() {
       {/* Main Glass Card */}
       <div className="relative z-10 w-full max-w-md">
         <div className="bg-white/70 backdrop-blur-2xl border border-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10 md:p-12">
-          
+
           {/* Logo / Header */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-linear-to-br from-blue-600 to-emerald-500 shadow-lg shadow-blue-500/20">
@@ -54,7 +58,7 @@ function Login() {
 
           {/* Form */}
           <form className="space-y-6" onSubmit={handleLogin}>
-            
+
             {/* Email Field */}
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
@@ -96,8 +100,10 @@ function Login() {
             <button
               type="submit"
               className="w-full group relative flex items-center justify-center bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg overflow-hidden transition-all active:scale-[0.98] cursor-pointer shadow-xl shadow-slate-900/10"
+              disabled={loading}
             >
-              <span className="relative z-10">Sign In</span>
+              <span className="relative z-10">
+                {loading ? "Signing In...." : "Sign In"}</span>
               <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </form>

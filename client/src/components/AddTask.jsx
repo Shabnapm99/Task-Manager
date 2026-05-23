@@ -10,6 +10,7 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
     const [description, setDescription] = useState('');
     const [showError, setShowError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isUpdating && taskData) {
@@ -26,6 +27,7 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
         const payload = { title, category, priority, status, description };
 
         try {
+            setLoading(true);
             if (isUpdating && taskData) {
                 let response = await axiosInstance.put(`/tasks/${taskData._id}`, payload);
                 setTasks(prev => prev.map(t => t._id === taskData._id ? response.data.task : t));
@@ -43,18 +45,20 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
         } catch (error) {
             setShowError(true);
             setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         /* Frosted Glass Overlay */
         <div className='fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-100 p-4'>
-            
+
             {/* Modal Container */}
             <div className="bg-white/90 backdrop-blur-2xl border border-white shadow-2xl rounded-[2.5rem] w-full max-w-lg p-8 md:p-10 relative overflow-hidden">
-                
+
                 {/* Close Button */}
-                <button 
+                <button
                     onClick={onClose}
                     className='absolute top-6 right-6 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all'
                 >
@@ -85,8 +89,8 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
 
                         <div>
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Priority</label>
-                            <select 
-                                value={priority} 
+                            <select
+                                value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
                                 className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50"
                             >
@@ -99,8 +103,8 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
 
                         <div>
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Status</label>
-                            <select 
-                                value={status} 
+                            <select
+                                value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                                 className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500/50"
                             >
@@ -136,15 +140,15 @@ function AddTask({ onClose, isUpdating, setTasks, taskData }) {
 
                     {showError && (
                         <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-bold flex items-center gap-2">
-                             <span>⚠️</span> {errorMessage}
+                            <span>⚠️</span> {errorMessage}
                         </div>
                     )}
 
                     <button
                         type="submit"
                         className="w-full group relative bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg overflow-hidden transition-all active:scale-95 shadow-xl shadow-slate-900/10"
-                    >
-                        <span className="relative z-10">{isUpdating ? "Save Changes" : "Add Task"}</span>
+                        disabled={loading}>
+                        <span className="relative z-10">{loading ? "Saving..." : isUpdating ? "Save Changes" : "Add Task"}</span>
                         <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </button>
                 </form>

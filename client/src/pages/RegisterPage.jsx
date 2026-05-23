@@ -10,17 +10,19 @@ function RegisterPage() {
     const [password, setPassword] = useState('');
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
     let navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        
+
         if (!name.trim()) {
             setShowError(true);
             setErrorMessage('Please provide a valid name');
             return;
-        } 
+        }
         if (!email.trim() || !emailRegex.test(email)) {
             setShowError(true);
             setErrorMessage("Please provide a proper email address");
@@ -28,6 +30,7 @@ function RegisterPage() {
         }
 
         try {
+            setLoading(true);
             let response = await axiosInstance.post('/auth/register', { name, email, password, username });
             if (response.status === 201) {
                 setShowError(false);
@@ -43,18 +46,20 @@ function RegisterPage() {
         } catch (error) {
             setShowError(true);
             setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-slate-50 px-4 overflow-hidden pt-20">
-            
+
             {/* Mesh Gradient Background (Matches Home/Login) */}
             <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-200/50 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse"></div>
             <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-100/60 rounded-full mix-blend-multiply filter blur-[80px] animate-pulse delay-700"></div>
 
             <div className="relative z-10 w-full max-w-xl flex flex-col items-center">
-                
+
                 {/* Header Section */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-linear-to-br from-blue-600 to-emerald-500 shadow-lg shadow-blue-500/20">
@@ -68,9 +73,9 @@ function RegisterPage() {
 
                 {/* Glassmorphism Form Card */}
                 <div className="bg-white/70 backdrop-blur-2xl border border-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] w-full p-8 md:p-10">
-                    
+
                     <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
-                        
+
                         {/* Name */}
                         <div className="md:col-span-1">
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
@@ -137,8 +142,10 @@ function RegisterPage() {
                             <button
                                 type="submit"
                                 className="w-full group relative flex items-center justify-center bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg overflow-hidden transition-all active:scale-[0.98] cursor-pointer shadow-xl shadow-slate-900/10"
+                                disabled={loading}
                             >
-                                <span className="relative z-10">Get Started</span>
+                                <span className="relative z-10">
+                                    {loading ? "Registering..." : "Get Started"}</span>
                                 <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             </button>
                         </div>
@@ -149,8 +156,8 @@ function RegisterPage() {
                         <div className="h-px w-full bg-slate-100"></div>
                         <p className="text-sm text-slate-500 font-medium">
                             Already have an account?{" "}
-                            <button 
-                                onClick={() => navigate('/login')} 
+                            <button
+                                onClick={() => navigate('/login')}
                                 className="text-blue-600 font-bold hover:text-emerald-600 transition-colors cursor-pointer"
                             >
                                 Sign In
